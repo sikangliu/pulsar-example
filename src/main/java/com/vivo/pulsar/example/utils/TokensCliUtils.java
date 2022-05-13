@@ -57,7 +57,7 @@ public class TokensCliUtils {
     }
 
     public static void main(String[] args) {
-        //String url = TokensCliUtils.class.getResource("/certs/my-secret.key").getPath().substring(1);
+        //String url = TokensCliUtils.class.getResource("/my-secret.key").getPath().substring(1);
         String SecretKey = "K/rRw0hzNrkdnlG1gFYcOYFf7yQDmdigRRQ9ueqopSs=";
 
         TokenInfo tokenInfo = new TokenInfo();

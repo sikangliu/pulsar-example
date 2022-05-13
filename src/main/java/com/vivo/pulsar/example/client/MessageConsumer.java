@@ -14,17 +14,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class MessageConsumer {
 
-    private ClientBuild client;
-    private Consumer consumer;
+    PulsarClientInit instance;
+    private Consumer<String> consumer;
 
-    public MessageConsumer(String topic, String subscription, String conName) throws PulsarClientException {
-        client = new ClientBuild();
+    public MessageConsumer(String topic, String subscription, String conName) throws Exception {
+        instance = PulsarClientInit.getInstance();
         consumer = createConsumer(topic, subscription, conName);
         System.out.println("consumer is:" + consumer);
     }
 
-    private Consumer createConsumer(String topic, String subscription, String conName) throws PulsarClientException {
-        return client.getPulsarClient().newConsumer(Schema.STRING)
+    private Consumer createConsumer(String topic, String subscription, String conName) throws Exception {
+        return instance.getPulsarClient().newConsumer(Schema.STRING)
                 .topic(topic)
                 .subscriptionName(subscription)
                 .ackTimeout(10, TimeUnit.SECONDS)
@@ -35,7 +35,7 @@ public class MessageConsumer {
 
     public void receiveMessage() throws ExecutionException, InterruptedException, PulsarClientException {
         do {
-            CompletableFuture<Message> msg = consumer.receiveAsync();
+            CompletableFuture<Message<String>> msg = consumer.receiveAsync();
             System.out.println("Message received is: " + new String(msg.get().getData()));
 
             consumer.acknowledge(msg.get());
@@ -43,9 +43,11 @@ public class MessageConsumer {
     }
 
 
-    public static void main(String[] args) throws PulsarClientException, ExecutionException, InterruptedException {
-
-        MessageConsumer consumer = new MessageConsumer("persistent://lsk_tenant/lsk_ns/topic3p", "lsk_sub", "lsk_con");
+    public static void main(String[] args) throws Exception {
+        String topicName = "persistent://kop-tn/kop-ns/kop-test";
+        String subscription = "kop-sub";
+        String conName = "lsk-con";
+        MessageConsumer consumer = new MessageConsumer(topicName, subscription, conName);
 
         consumer.receiveMessage();
     }

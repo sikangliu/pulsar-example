@@ -2,8 +2,13 @@ package com.vivo.pulsar.example.utils;
 
 import org.apache.pulsar.client.admin.PulsarAdmin;
 import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.common.conf.InternalConfigurationData;
+import org.apache.pulsar.common.policies.data.*;
 
+import javax.sound.midi.Soundbank;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -15,12 +20,17 @@ public class AdminClient {
 
     private PulsarAdmin admin;
 
-    public AdminClient() throws PulsarClientException {
-        String url = "http://10.101.50.13:8084,10.101.50.14:8084,10.101.50.15:8084";
+    public AdminClient(String env) throws PulsarClientException {
+        String url;
+        String authParams;
         String authPluginClassName = "org.apache.pulsar.client.impl.auth.AuthenticationToken";
-        //pulsar-admin:eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwdWxzYXItYWRtaW4ifQ.OX2P8rYrvuX0AMf98pG8YzHdZKxHdhseni3ET_Y1WAk
-        String authParams = "token:eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwdWxzYXItYWRtaW4ifQ.OX2P8rYrvuX0AMf98pG8YzHdZKxHdhseni3ET_Y1WAk";
-
+        if (env.equals("local")) {
+            url = "http://localhost:8080";
+            authParams = "token:eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwdWxzYXItYWRtaW4ifQ.AV_jbPsAXb3rnhDm8-zOVt_Zwi_3jX-XNXMw_MU6WNU";
+        } else {
+            url = "http://10.101.129.85:8080";
+            authParams = "token:eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwdWxzYXJhZG1pbiJ9.zSPFdsq2cA1KAveDf5AHGMp_ts8yWcrZORtl4_8J_NM";
+        }
         admin = PulsarAdmin.builder()
                 .authentication(authPluginClassName, authParams)
                 .serviceHttpUrl(url)
@@ -32,11 +42,25 @@ public class AdminClient {
     }
 
     public static void main(String[] args) throws Exception {
-        AdminClient adminClient = new AdminClient();
+        AdminClient adminClient = new AdminClient("local");
         PulsarAdmin pulsarAdmin = adminClient.getPulsarAdmin();
         String namespace = "lsk_tenant/lsk_ns";
         String topic = "persistent://lsk_tenant/lsk_ns/topic3p";
 
+//        List<String> activeBrokers = pulsarAdmin.brokers().getActiveBrokers("tianji");
+//        System.out.println("active broker :" + activeBrokers.toString());
+//
+//        InternalConfigurationData internalConfigure = pulsarAdmin.brokers().getInternalConfigurationData();
+//        String stateStorageServiceUrl = internalConfigure.getStateStorageServiceUrl();
+//        System.out.println("stateStorageServiceUrl:" + stateStorageServiceUrl);
+//        Map<String, String> map = pulsarAdmin.brokers().getRuntimeConfigurations();
+//        System.out.println("动态配置：");
+//        map.forEach((key, value) -> {
+//            if ("brokerServicePort".equals(key) || "webServicePort".equals(key)) {
+//                System.out.println(key + ":" + value);
+//                System.out.println(value);
+//            }
+//        });
 //        Set<AuthAction> actions = new HashSet<>();
 //        actions.add(AuthAction.produce);
 //        actions.add(AuthAction.consume);
@@ -63,10 +87,22 @@ public class AdminClient {
 //        Integer integer = snapshotIntervalAsync.get();
 //        System.out.println("snapshotIntervalAsync is:"+integer);
 
-        String namespace3 = "lsk_tenant/lsk_ns3";
-        CompletableFuture<Void> namespaceAsync = pulsarAdmin.namespaces().createNamespaceAsync(namespace3, 5);
-        Void aVoid = namespaceAsync.get();
-        if (null == aVoid) System.out.println("名称空间创建成功！");
+        String namespace3 = "lsk_tenant/lsk_ns10";
+        Integer bundle = 20;
+        //pulsarAdmin.namespaces().createNamespace(namespace3, bundle);
+//        pulsarAdmin.namespaces().setNamespaceMessageTTL(namespace3, 3 * 60 * 60);
+//        public RetentionPolicies(int retentionTimeInMinutes, int retentionSizeInMB) {
+        RetentionPolicies retention = new RetentionPolicies(20, 1024);
+        pulsarAdmin.namespaces().setRetention(namespace3, retention);
+//        PersistencePolicies persistence = new PersistencePolicies(3, 3, 2, 0.0D);
+//        pulsarAdmin.namespaces().setPersistence(namespace3, persistence);
+
+
+        Policies policies = pulsarAdmin.namespaces().getPolicies(namespace3);
+        System.out.println(policies);
+//        CompletableFuture<Void> namespaceAsync = pulsarAdmin.namespaces().createNamespaceAsync(namespace3, 5);
+//        Void aVoid = namespaceAsync.get();
+//        if (null == aVoid) System.out.println("名称空间创建成功！");
 
         System.exit(0);
 
