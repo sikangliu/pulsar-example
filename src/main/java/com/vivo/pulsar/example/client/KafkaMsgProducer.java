@@ -14,17 +14,17 @@ import java.util.Properties;
  */
 public class KafkaMsgProducer {
 
-    public static final String DOMAIN_NAME = "localhost:9092";
-    public static final String TOPIC_NAME = "persistent://kop-tn/kop-ns/kop-test";
-    public static final String PRO_CLIENT_ID = "kop_pro";
-    public static final String TENANT = "kop-tn/kop-ns";
-    public static final String PASSWORD = "token:eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwdWxzYXItYWRtaW4ifQ.AV_jbPsAXb3rnhDm8-zOVt_Zwi_3jX-XNXMw_MU6WNU";
-
-//    public static final String DOMAIN_NAME = "10.101.129.65:9092";
+//    public static final String DOMAIN_NAME = "localhost:9092";
 //    public static final String TOPIC_NAME = "persistent://kop-tn/kop-ns/kop-test";
 //    public static final String PRO_CLIENT_ID = "kop_pro";
 //    public static final String TENANT = "kop-tn/kop-ns";
 //    public static final String PASSWORD = "token:eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJwdWxzYXItYWRtaW4ifQ.AV_jbPsAXb3rnhDm8-zOVt_Zwi_3jX-XNXMw_MU6WNU";
+
+    public static final String DOMAIN_NAME = "10.101.129.65:9092";
+    public static final String TOPIC_NAME = "persistent://kop/kop-ns/kop-test";
+    public static final String PRO_CLIENT_ID = "kop_pro";
+    public static final String TENANT = "kop/kop-ns";
+    public static final String PASSWORD = "token:eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJrb3Atcm9sZSJ9.8rU1Nj-KAViLLurdz7Cdoq3hxS8rY-XJba0Ff6ulYho";
 
     public static void main(String[] args) {
         Producer<String, String> producer = null;

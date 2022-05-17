@@ -44,7 +44,7 @@ public class MessageConsumer {
 
 
     public static void main(String[] args) throws Exception {
-        String topicName = "persistent://kop-tn/kop-ns/kop-test";
+        String topicName = "persistent://kop/kop-ns/kop-test";
         String subscription = "kop-sub";
         String conName = "lsk-con";
         MessageConsumer consumer = new MessageConsumer(topicName, subscription, conName);

@@ -45,7 +45,7 @@ public class MessageProducer {
 
     public static void main(String[] args) {
         int sendCount = 10;
-        String topicName = "persistent://kop-tn/kop-ns/kop-test";
+        String topicName = "persistent://kop/kop-ns/kop-test";
         MessageProducer producer = null;
         try {
             producer = new MessageProducer(topicName);
